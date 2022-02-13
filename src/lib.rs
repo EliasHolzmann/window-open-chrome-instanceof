@@ -13,7 +13,7 @@ pub fn append_div_to_document_containing(element: web_sys::HtmlElement) {
     let div = document
         .create_element("div")
         .expect("create_element() failed");
-    div.set_inner_html("Created by WASM");
+    div.set_text_content(Some("Created by WASM"));
 
     document
         .body()
