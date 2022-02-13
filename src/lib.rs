@@ -1,27 +1,23 @@
 use wasm_bindgen::prelude::*;
 use wasm_bindgen::JsCast;
-use wasm_bindgen::JsValue;
 
 #[wasm_bindgen]
-pub fn draw_text_on_canvas(canvas: web_sys::HtmlCanvasElement) {
+pub fn append_div_to_document_containing(element: web_sys::HtmlElement) {
     console_error_panic_hook::set_once();
-    let width = canvas.client_width();
-    let height = canvas.client_height();
 
-    let context = canvas
-        .get_context("2d")
-        .unwrap()
-        .unwrap()
-        .dyn_into::<web_sys::CanvasRenderingContext2d>()
-        .expect("Did not return CanvasRenderingContext2d");
+    let document = element
+        .get_root_node()
+        .dyn_into::<web_sys::HtmlDocument>()
+        .expect("get_root_node() did not return Document");
 
-    context.set_global_alpha(1.0);
+    let div = document
+        .create_element("div")
+        .expect("create_element() failed");
+    div.set_inner_html("Created by WASM");
 
-    context.set_fill_style(&JsValue::from_str("rgb(255, 255, 255)"));
-    context.fill_rect(0.0, 0.0, width.into(), height.into());
-
-    context.set_fill_style(&JsValue::from_str("rgb(0, 0, 0)"));
-    context
-        .fill_text_with_max_width("Drawn in WASM", 0.into(), (height / 2).into(), width.into())
-        .unwrap();
+    document
+        .body()
+        .expect("root_node.body() returned null")
+        .append_with_node_1(&div)
+        .expect("Appending failed");
 }
