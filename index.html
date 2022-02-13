@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <input type="button" id="canvas_here" value="Add canvas here"><input type="button" id="canvas_window_open" value="Add canvas via window.open()">
+    <script type="module">
+        import init, { draw_text_on_canvas } from './pkg/window_open_chrome_instanceof.js';
+        
+        window.onload = () => {
+            async function run() {
+                await init();
+                function addCanvasAndDraw(document) {
+                    let canvas = document.createElement("canvas");
+                    document.body.append(canvas);
+                    draw_text_on_canvas(canvas);
+                }
+                
+                document.querySelector("#canvas_here").addEventListener("click", () => {
+                    addCanvasAndDraw(document);
+                });
+                document.querySelector("#canvas_window_open").addEventListener("click", () => {
+                    addCanvasAndDraw(window.open("", "", "popup").document);
+                });
+            }
+            
+            run();
+        };
+    </script>
+</body>
+</html>
